@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dictée d'Oliver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style id="st">
+:root{--paper:#FFFFFF;--line:#E3E8F6;--line-strong:#B4C1EA;--margin:#D93A3A;--ink:#1E3A8A;--ink-soft:#4A5A8C;--text:#1B2233;--ok:#1F7A4D;--ok-bg:#E4F3EA;--err:#C62828;--err-bg:#FDE8E8;--field:#FFFFFF;--muted:#5E6780;--on-ink:#FFFFFF;--margin-x:52px;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#161D29;--line:#1F2838;--line-strong:#2D3A51;--margin:#E26A6A;--ink:#9DB4FF;--ink-soft:#8EA0CF;--text:#E6EAF4;--ok:#62D29C;--ok-bg:#15322A;--err:#FF8F86;--err-bg:#3A1E24;--field:#1D2533;--muted:#9AA3B9;--on-ink:#0E1522;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#161D29;--line:#1F2838;--line-strong:#2D3A51;--margin:#E26A6A;--ink:#9DB4FF;--ink-soft:#8EA0CF;--text:#E6EAF4;--ok:#62D29C;--ok-bg:#15322A;--err:#FF8F86;--err-bg:#3A1E24;--field:#1D2533;--muted:#9AA3B9;--on-ink:#0E1522;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--paper)}
+body{margin:0;min-height:100%;color:var(--text);background-color:var(--paper);
+background-image:linear-gradient(to right,transparent calc(var(--margin-x) - 1px),var(--margin) calc(var(--margin-x) - 1px),var(--margin) calc(var(--margin-x) + 1px),transparent calc(var(--margin-x) + 1px)),
+repeating-linear-gradient(to right,transparent 0,transparent 31px,var(--line) 31px,var(--line) 32px),
+repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--line-strong) 31px,var(--line-strong) 32px),
+repeating-linear-gradient(to bottom,transparent 0,transparent 7px,var(--line) 7px,var(--line) 8px);
+font-family:'Andika','Trebuchet MS',system-ui,sans-serif;font-size:19px;line-height:1.5;-webkit-text-size-adjust:100%}
+#root{max-width:780px;padding:20px 20px 56px calc(var(--margin-x) + 22px)}
+@media (max-width:540px){:root{--margin-x:22px}#root{padding-left:calc(var(--margin-x) + 14px);padding-right:14px}}
+.title{font-family:'Caveat','Segoe Print',cursive;font-weight:700;font-size:52px;line-height:1;color:var(--ink);margin:4px 0 14px}
+.tabs{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:22px}
+.tab{background:none;border:0;padding:6px 0;font:inherit;font-size:20px;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent}
+.tab[aria-current="page"]{color:var(--ink);font-weight:700;border-bottom-color:var(--ink)}
+h2{font-size:22px;margin:30px 0 8px;color:var(--ink)}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:12px 22px;border-radius:14px;font:inherit;font-size:20px;font-weight:700;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:var(--on-ink);text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--ink-soft);font-weight:400;min-height:44px;padding:8px 10px;font-size:17px;text-decoration:underline}
+.btn.danger{border-color:var(--err);color:var(--err);background:transparent;font-size:16px;min-height:44px;padding:6px 14px;font-weight:400}
+.btn.small-btn{min-height:44px;padding:6px 14px;font-size:16px;font-weight:400}
+.btn[disabled]{opacity:.55;cursor:default}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.listen{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:10px 0 22px}
+.listen-btn{width:112px;height:112px;border-radius:50%;flex-direction:column;gap:2px;padding:0;font-size:17px}
+.listen-btn svg{width:40px;height:40px}
+.progress{font-size:17px;color:var(--muted);margin-bottom:6px}
+label{display:block;font-weight:700;margin:6px 0 4px}
+.answer{display:block;width:100%;max-width:560px;font:inherit;font-size:36px;letter-spacing:.02em;color:var(--ink);background:transparent;border:0;border-bottom:3px solid var(--ink);padding:6px 4px;border-radius:0}
+.field{display:block;width:100%;max-width:560px;font:inherit;font-size:20px;color:var(--text);background:var(--field);border:2px solid var(--line-strong);border-radius:10px;padding:10px 12px}
+textarea.field{min-height:130px;resize:vertical}
+select.field{max-width:420px}
+.accents{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px;max-width:560px}
+.accents button{min-width:46px;min-height:46px;font:inherit;font-size:22px;border-radius:10px;border:2px solid var(--line-strong);background:var(--field);color:var(--text);cursor:pointer}
+.teacher{font-family:'Caveat','Segoe Print',cursive;font-weight:700;font-size:34px;line-height:1.1;margin:18px 0 8px;color:var(--err)}
+.teacher.good{color:var(--ok)}
+.hint{color:var(--err);font-weight:700}
+.diff{font-size:32px;letter-spacing:.04em;margin:2px 0 12px;word-break:break-all}
+.diff-label{font-size:16px;color:var(--muted);margin:0}
+.l-bad{color:var(--err);background:var(--err-bg);border-radius:4px;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.l-extra{color:var(--err);text-decoration:line-through;text-decoration-thickness:2px}
+.l-gap{color:var(--err);font-weight:700}
+.bigword{font-size:40px;color:var(--ink);margin:0 0 14px;word-break:break-word}
+.msg{padding:10px 14px;border-left:4px solid var(--ink);background:var(--field);margin:0 0 16px}
+.msg-ok{border-left-color:var(--ok)}
+.msg-err{border-left-color:var(--err)}
+.pending{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 14px;border:2px dashed var(--ink);border-radius:12px;margin:18px 0}
+.words{list-style:none;padding:0;margin:0}
+.words li{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 0;border-bottom:1px solid var(--line-strong)}
+.words .w{font-size:24px;font-weight:700;flex:1 1 180px;word-break:break-word}
+.words .s{display:block;font-size:16px;font-weight:400;color:var(--muted)}
+.tag{font-size:14px;color:var(--muted);border:1px solid var(--line-strong);border-radius:999px;padding:1px 10px}
+.tag.hard{color:var(--err);border-color:var(--err)}
+details{margin:26px 0 0}
+summary{cursor:pointer;font-weight:700;color:var(--ink);font-size:20px;padding:6px 0}
+.score{font-family:'Caveat','Segoe Print',cursive;font-size:64px;line-height:1;color:var(--ink);margin:6px 0 10px}
+.missed li{font-size:24px;font-weight:700;margin:4px 0}
+.missed{padding-left:24px}
+@media (prefers-reduced-motion:no-preference){.pop{animation:pop .35s ease-out}@keyframes pop{from{transform:scale(.92);opacity:.3}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="words-data" type="application/json">[{"w": "la construction"}, {"w": "la tour", "p": "La tour Eiffel se trouve à Paris."}, {"w": "un an", "p": "Une année, c'est un an."}, {"w": "le fer", "p": "La tour est faite de fer."}, {"w": "la tonne", "p": "Ce bloc pèse une tonne."}, {"w": "la peinture"}, {"w": "la dizaine"}, {"w": "la centaine"}, {"w": "le millier"}, {"w": "le début"}, {"w": "l'ampoule"}, {"w": "le sommet", "p": "Nous montons au sommet de la tour."}, {"w": "le ciel"}, {"w": "l'heure", "p": "Quelle heure est-il ?"}, {"w": "la nuit"}, {"w": "le mètre", "p": "La règle mesure un mètre."}, {"w": "le monument"}, {"w": "le pays", "p": "La France est un pays."}, {"w": "le million"}, {"w": "se terminer"}, {"w": "nécessiter"}, {"w": "rayonner"}, {"w": "briller"}, {"w": "célèbre"}, {"w": "plusieurs"}, {"w": "au-dessus"}, {"w": "ainsi"}, {"w": "même", "p": "Nous avons le même livre."}, {"w": "plus", "p": "Je n'ai plus faim."}, {"w": "avec"}, {"w": "chaque"}, {"w": "dans", "p": "Le chat dort dans son panier."}, {"w": "le siècle", "p": "Un siècle dure cent ans."}, {"w": "une époque"}, {"w": "la Gaule", "p": "Les Romains ont conquis la Gaule."}, {"w": "l'étage"}, {"w": "la hauteur"}, {"w": "le spectateur"}, {"w": "le Gallo-Romain"}, {"w": "le combat"}, {"w": "la bataille"}, {"w": "le gladiateur"}, {"w": "l'animal"}, {"w": "les animaux"}, {"w": "l'eau", "p": "Je bois de l'eau."}, {"w": "l'arène"}, {"w": "les gradins"}, {"w": "la galerie"}, {"w": "l'intérieur"}, {"w": "un riche"}, {"w": "un pauvre"}, {"w": "compter", "p": "Je sais compter jusqu'à cent."}, {"w": "accueillir"}, {"w": "assister"}, {"w": "accéder"}, {"w": "s'installer"}, {"w": "premier"}, {"w": "construit"}, {"w": "romain"}, {"w": "violent"}, {"w": "plein", "p": "Le verre est plein d'eau."}, {"w": "jusqu'à", "p": "Je marche jusqu'à l'école."}, {"w": "grâce", "p": "Grâce à toi, j'ai réussi."}, {"w": "en bas"}, {"w": "en haut", "p": "Il monte en haut de l'escalier."}, {"w": "peut-être", "p": "Il viendra peut-être demain."}]</script>
+<script id="app">
+(function(){
+'use strict';
+var HEAD='<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<title>Dict\u00e9e d\'Oliver</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">\n';
+var K={stats:'dictee:stats',local:'dictee:local-words',voice:'dictee:voice',work:'dictee:working',hidden:'dictee:hidden'};
+function get(store,k,d){try{var v=store.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function put(store,k,v){try{store.setItem(k,JSON.stringify(v))}catch(e){}}
+function del(store,k){try{store.removeItem(k)}catch(e){}}
+var LS,SS;try{LS=window.localStorage}catch(e){LS=null}try{SS=window.sessionStorage}catch(e){SS=null}
+function lsGet(k,d){return LS?get(LS,k,d):d}function lsSet(k,v){if(LS)put(LS,k,v)}
+function ssGet(k,d){return SS?get(SS,k,d):d}function ssSet(k,v){if(SS)put(SS,k,v)}function ssDel(k){if(SS)del(SS,k)}
+
+function norm(s){return String(s||'').normalize('NFC').replace(/[\u2019\u2018`\u00b4]/g,"'").replace(/\s+/g,' ').trim()}
+function keyOf(w){return norm(w).toLowerCase()}
+function clean(list){var out=[],seen={};(Array.isArray(list)?list:[]).forEach(function(x){if(!x||typeof x.w!=='string')return;var w=norm(x.w);if(!w)return;var k=keyOf(w);if(seen[k])return;seen[k]=1;var o={w:w};var p=norm(x.p);if(p)o.p=p;out.push(o)});return out}
+function sameList(a,b){return JSON.stringify(clean(a))===JSON.stringify(clean(b))}
+
+var embedded=[];try{embedded=clean(JSON.parse(document.getElementById('words-data').textContent))}catch(e){embedded=[]}
+
+var state={tab:'practice',canPublish:null,artifact:null,working:null,dirty:false,saving:false,msg:null,session:null,voices:[],voiceURI:lsGet(K.voice,''),localExtras:clean(lsGet(K.local,[])),stats:lsGet(K.stats,{})||{},focus:null};
+(function(){var w=ssGet(K.work,null);if(w&&!sameList(w,embedded)){state.working=clean(w);state.dirty=true}else{ssDel(K.work);state.working=embedded.slice()}})();
+
+function hiddenSet(){var m={};(lsGet(K.hidden,[])||[]).forEach(function(k){m[k]=1});return m}
+function visibleEmbedded(){var hd=hiddenSet();return embedded.filter(function(x){return !hd[keyOf(x.w)]})}
+function baseList(){return state.canPublish===false?visibleEmbedded():state.working}
+function practiceList(){var seen={},out=[];baseList().concat(state.localExtras).forEach(function(x){var k=keyOf(x.w);if(!seen[k]){seen[k]=1;out.push(x)}});return out}
+function stat(w){var k=keyOf(w);if(!state.stats[k])state.stats[k]={miss:0,streak:0};return state.stats[k]}
+function isHard(x){var s=state.stats[keyOf(x.w)];return !!(s&&s.miss>0&&s.streak<2)}
+function saveStats(){lsSet(K.stats,state.stats)}
+
+function h(tag,attrs,kids){var el=document.createElement(tag);if(attrs){for(var k in attrs){var v=attrs[k];if(v==null||v===false)continue;if(k==='class')el.className=v;else if(k==='text')el.textContent=v;else if(k==='value')el.value=v;else if(k.slice(0,2)==='on')el.addEventListener(k.slice(2),v);else el.setAttribute(k,v===true?'':v)}}(kids||[]).forEach(function(c){if(c==null||c===false)return;el.appendChild(typeof c==='string'?document.createTextNode(c):c)});return el}
+var SPEAKER='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+function icon(){var s=h('span');s.innerHTML=SPEAKER;return s.firstChild}
+
+/* ---------- Voix ---------- */
+var HAS_TTS=('speechSynthesis' in window)&&typeof window.SpeechSynthesisUtterance==='function';
+function rankVoice(v){var n=(v.name+' '+v.voiceURI).toLowerCase();var r=0;if(/premium/.test(n))r+=40;else if(/enhanced|am\u00e9lior/.test(n))r+=30;if(/^fr[-_]fr/i.test(v.lang))r+=10;if(/am\u00e9lie|amelie|thomas|audrey|aur\u00e9lie|marie/.test(n))r+=5;return r}
+function loadVoices(){if(!HAS_TTS)return;var v=speechSynthesis.getVoices().filter(function(x){return /^fr/i.test(x.lang)});v.sort(function(a,b){return rankVoice(b)-rankVoice(a)});state.voices=v;var sel=document.getElementById('voice-select');if(sel)fillVoices(sel)}
+function pickVoice(){var v=state.voices;if(!v.length)return null;for(var i=0;i<v.length;i++)if(v[i].voiceURI===state.voiceURI)return v[i];return v[0]}
+function speak(parts,slow){if(!HAS_TTS)return;var synth=window.speechSynthesis;var go=function(){parts.forEach(function(t){if(!t)return;var u=new SpeechSynthesisUtterance(t);var v=pickVoice();u.lang=v?v.lang:'fr-FR';if(v)u.voice=v;u.rate=slow?0.6:0.85;synth.speak(u)})};if(synth.speaking||synth.pending){synth.cancel();setTimeout(go,150)}else go()}
+function speakWord(x,slow){speak(x.p?[x.w,x.p,x.w]:[x.w,x.w],slow)}
+if(HAS_TTS){loadVoices();if(typeof speechSynthesis.addEventListener==='function')speechSynthesis.addEventListener('voiceschanged',loadVoices);else speechSynthesis.onvoiceschanged=loadVoices}
+
+/* ---------- Comparaison lettre par lettre ---------- */
+function compare(typed,expected){var t=Array.from(norm(typed)),e=Array.from(norm(expected));var ex=e.join('');var strict=ex!==ex.toLowerCase();
+function eq(a,b){return strict?a===b:a.toLowerCase()===b.toLowerCase()}
+if(t.length===e.length&&t.every(function(c,i){return eq(c,e[i])}))return{ok:true};
+var n=t.length,m=e.length,d=[],i,j;for(i=0;i<=n;i++){d.push([i]);}for(j=1;j<=m;j++)d[0][j]=j;
+for(i=1;i<=n;i++)for(j=1;j<=m;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(eq(t[i-1],e[j-1])?0:1));
+var ops=[];i=n;j=m;while(i>0||j>0){if(i>0&&j>0&&d[i][j]===d[i-1][j-1]+(eq(t[i-1],e[j-1])?0:1)){ops.unshift({type:eq(t[i-1],e[j-1])?'eq':'sub',t:t[i-1],e:e[j-1]});i--;j--}else if(i>0&&d[i][j]===d[i-1][j]+1){ops.unshift({type:'ins',t:t[i-1]});i--}else{ops.unshift({type:'del',e:e[j-1]});j--}}
+var strip=function(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()};
+var hint='';var tt=t.join('');if(tt.toLowerCase()===ex.toLowerCase())hint='Attention \u00e0 la majuscule !';else if(strip(tt)===strip(ex))hint='Attention aux accents !';
+return{ok:false,ops:ops,hint:hint}}
+
+/* ---------- Enregistrement ---------- */
+function buildDoc(list){var css=document.getElementById('st').textContent;var app=document.getElementById('app').textContent;var json=JSON.stringify(clean(list)).replace(/</g,'\\u003c');var end='</scr'+'ipt>';
+return '<!DOCTYPE html>\n<html lang="fr">\n<head>\n'+HEAD+'<style id="st">'+css+'</style>\n</head>\n<body>\n<div id="root"></div>\n<script id="words-data" type="application/json">'+json+end+'\n<script id="app">'+app+end+'\n</body>\n</html>\n'}
+function becomeLocal(){if(state.canPublish===false)return;state.canPublish=false;state.artifact=null;if(state.dirty){var known={};embedded.concat(state.localExtras).forEach(function(x){known[keyOf(x.w)]=1});state.working.forEach(function(x){if(!known[keyOf(x.w)]){state.localExtras.push(x);known[keyOf(x.w)]=1}});lsSet(K.local,state.localExtras)}state.dirty=false;ssDel(K.work);state.working=embedded.slice()}
+function markDirty(){state.dirty=!sameList(state.working,embedded);if(state.dirty)ssSet(K.work,state.working);else ssDel(K.work)}
+function save(){if(!state.artifact||state.saving)return;state.saving=true;state.msg=null;render();ssSet(K.work,state.working);
+state.artifact.publish(buildDoc(state.working)).then(function(){state.saving=false;state.msg={t:'ok',x:'Liste enregistr\u00e9e.'};render()},function(err){state.saving=false;var c=err&&err.code;
+if(c==='conflict'){state.msg={t:'info',x:'La liste a \u00e9t\u00e9 modifi\u00e9e sur un autre appareil. La page se recharge ; vos ajouts seront conserv\u00e9s, enregistrez de nouveau.'}}
+else if(['not_writer','not_granted','not_declared','consent_required','capability_disabled','capability_removed'].indexOf(c)>=0){becomeLocal();state.msg={t:'info',x:'Ici, la liste partag\u00e9e ne peut pas \u00eatre modifi\u00e9e : les mots ajout\u00e9s sont gard\u00e9s seulement sur cet appareil.'}}
+else if(c==='rate_limited'){state.msg={t:'err',x:'Trop d\u2019enregistrements rapproch\u00e9s. R\u00e9essayez dans une minute.'}}
+else if(c==='too_large'){state.msg={t:'err',x:'La liste est trop longue pour \u00eatre enregistr\u00e9e. Retirez quelques mots.'}}
+else{state.msg={t:'err',x:'L\u2019enregistrement n\u2019a pas abouti. R\u00e9essayez.'}}render()})}
+
+/* ---------- Liste ---------- */
+function exists(w){var k=keyOf(w);return practiceList().some(function(x){return keyOf(x.w)===k})}
+function addWords(items){var added=0,dup=0;items.forEach(function(it){var w=norm(it.w);if(!w)return;if(exists(w)){dup++;return}var o={w:w};var p=norm(it.p);if(p)o.p=p;if(state.canPublish===false){state.localExtras.push(o);lsSet(K.local,state.localExtras)}else{state.working.push(o)}added++});if(state.canPublish!==false)markDirty();return{added:added,dup:dup}}
+function removeWord(x,local){var k=keyOf(x.w);if(state.canPublish===false&&!local){var hd=lsGet(K.hidden,[])||[];if(hd.indexOf(k)<0)hd.push(k);lsSet(K.hidden,hd);state.msg=null;render();return}if(local){state.localExtras=state.localExtras.filter(function(y){return keyOf(y.w)!==k});lsSet(K.local,state.localExtras)}else{state.working=state.working.filter(function(y){return keyOf(y.w)!==k});markDirty()}state.msg=null;render()}
+function parseBulk(txt){var lines=String(txt||'').split(/\r?\n/);if(lines.length===1&&/[,;]/.test(lines[0]))lines=lines[0].split(/[,;]/);return lines.map(function(l){var i=l.indexOf(':');return i>0?{w:l.slice(0,i),p:l.slice(i+1)}:{w:l}})}
+
+/* ---------- Séance ---------- */
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function startSession(list,label){if(!list.length)return;var q=shuffle(list.map(function(x){return{w:x.w,p:x.p,missed:false}}));state.session={queue:q,total:q.length,done:0,first:0,missed:[],cur:null,phase:'ask',label:label,source:list.slice()};state.tab='practice';state.msg=null;next()}
+function next(){var s=state.session;s.copyErr=false;s.feedback=null;if(!s.queue.length){s.phase='end';render();return}s.cur=s.queue.shift();s.phase='ask';state.focus='answer';render();speakWord(s.cur,false)}
+function check(){var s=state.session;var inp=document.getElementById('answer');if(!s||!inp)return;var typed=norm(inp.value);if(!typed){inp.focus();return}
+if(s.phase==='ask'){var r=compare(typed,s.cur.w);var st=stat(s.cur.w);
+if(r.ok){if(!s.cur.missed){s.first++;st.streak=(st.streak||0)+1}s.done++;s.phase='right'}
+else{st.miss=(st.miss||0)+1;st.streak=0;if(!s.cur.missed){s.cur.missed=true;s.missed.push({w:s.cur.w,p:s.cur.p})}s.phase='wrong';s.feedback=r;s.queue.push(s.cur);state.focus='answer'}
+saveStats();render()}
+else if(s.phase==='wrong'){if(compare(typed,s.cur.w).ok){s.phase='copied';render()}else{s.copyErr=true;state.focus='answer';render()}}}
+
+/* ---------- Affichage ---------- */
+function btn(text,onclick,cls,extra){var a={class:'btn'+(cls?' '+cls:''),type:'button',onclick:onclick};if(extra)for(var k in extra)a[k]=extra[k];return h('button',a,[text])}
+function tabBtn(id,text){return h('button',{class:'tab',type:'button','aria-current':state.tab===id?'page':null,onclick:function(){state.tab=id;state.msg=null;render()}},[text])}
+function render(){var root=document.getElementById('root');root.textContent='';
+root.appendChild(h('header',null,[h('h1',{class:'title',text:'Dict\u00e9e d\'Oliver'}),h('nav',{class:'tabs','aria-label':'Sections'},[tabBtn('practice','S\u2019entra\u00eener'),tabBtn('words','Mes mots ('+practiceList().length+')')])]));
+if(state.msg)root.appendChild(h('p',{class:'msg msg-'+state.msg.t,role:'status',text:state.msg.x}));
+root.appendChild(state.tab==='practice'?practiceView():wordsView());
+if(state.focus){var el=document.getElementById(state.focus);state.focus=null;if(el)try{el.focus({preventScroll:false})}catch(e){el.focus()}}}
+
+function practiceView(){var s=state.session;if(!s)return homeView();if(s.phase==='end')return endView();return askView()}
+function homeView(){var list=practiceList(),hard=list.filter(isHard);var sec=h('section');
+if(!list.length){sec.appendChild(h('p',{text:'La liste est vide pour l\u2019instant.'}));sec.appendChild(btn('Ajouter des mots',function(){state.tab='words';state.focus='new-word';render()}));return sec}
+sec.appendChild(h('p',{text:'\u00c9coute chaque mot, puis \u00e9cris-le. Un mot rat\u00e9 revient plus tard, jusqu\u2019\u00e0 ce qu\u2019il soit r\u00e9ussi.'}));
+var row=h('div',{class:'row'});row.appendChild(btn('Commencer la dict\u00e9e ('+list.length+' mot'+(list.length>1?'s':'')+')',function(){startSession(practiceList(),'all')}));
+if(hard.length)row.appendChild(btn('Revoir les mots difficiles ('+hard.length+')',function(){startSession(practiceList().filter(isHard),'hard')},'ghost'));
+sec.appendChild(row);
+if(!HAS_TTS)sec.appendChild(h('p',{class:'msg msg-err',text:'La lecture \u00e0 voix haute n\u2019est pas disponible dans ce navigateur. Ouvrez la page dans Safari.'}));
+return sec}
+
+function diffLine(ops,side){var p=h('p',{class:'diff'});ops.forEach(function(o){if(side==='typed'){if(o.type==='eq')p.appendChild(document.createTextNode(o.t));else if(o.type==='sub')p.appendChild(h('span',{class:'l-bad',text:o.t}));else if(o.type==='ins')p.appendChild(h('span',{class:'l-extra',text:o.t}));else p.appendChild(h('span',{class:'l-gap','aria-label':'lettre manquante',text:'\u2038'}))}else{if(o.type==='eq')p.appendChild(document.createTextNode(o.e));else if(o.type==='sub'||o.type==='del')p.appendChild(h('span',{class:'l-bad',text:o.e}))}});return p}
+
+function askView(){var s=state.session,cur=s.cur;var sec=h('section');
+sec.appendChild(h('p',{class:'progress',text:'Mots r\u00e9ussis : '+s.done+' sur '+s.total}));
+var lb=h('button',{class:'btn listen-btn',type:'button','aria-label':'\u00c9couter le mot',onclick:function(){speakWord(cur,false)}},[icon(),'\u00c9couter']);
+sec.appendChild(h('div',{class:'listen'},[lb,btn('Plus lentement',function(){speakWord(cur,true)},'ghost')]));
+if(s.phase==='ask'||s.phase==='wrong'){
+if(s.phase==='wrong'){var fb=s.feedback;sec.appendChild(h('p',{class:'teacher pop',text:'Pas tout \u00e0 fait\u2026'}));if(fb.hint)sec.appendChild(h('p',{class:'hint',text:fb.hint}));
+sec.appendChild(h('p',{class:'diff-label',text:'Tu as \u00e9crit :'}));sec.appendChild(diffLine(fb.ops,'typed'));
+sec.appendChild(h('p',{class:'diff-label',text:'Il fallait \u00e9crire :'}));sec.appendChild(diffLine(fb.ops,'exp'));
+if(s.copyErr)sec.appendChild(h('p',{class:'hint',text:'Regarde bien le mod\u00e8le et recopie-le exactement.'}))}
+sec.appendChild(h('label',{for:'answer',text:s.phase==='ask'?'\u00c9cris le mot :':'Recopie le mot correctement :'}));
+var inp=h('input',{id:'answer',class:'answer',type:'text',autocomplete:'off',autocorrect:'off',autocapitalize:'none',spellcheck:'false',enterkeyhint:'done','aria-describedby':'acc-help',onkeydown:function(e){if(e.key==='Enter'){e.preventDefault();check()}}});
+sec.appendChild(inp);
+var acc=h('div',{class:'accents',id:'acc-help','aria-label':'Lettres accentu\u00e9es'});['\u00e9','\u00e8','\u00ea','\u00eb','\u00e0','\u00e2','\u00e7','\u00f9','\u00fb','\u00ee','\u00ef','\u00f4','\u0153','\u00e6',"'",'-'].forEach(function(c){acc.appendChild(h('button',{type:'button','aria-label':'Ajouter '+c,onpointerdown:function(e){e.preventDefault()},onclick:function(){var i=document.getElementById('answer');if(!i)return;var a=i.selectionStart==null?i.value.length:i.selectionStart,b=i.selectionEnd==null?a:i.selectionEnd;i.value=i.value.slice(0,a)+c+i.value.slice(b);i.focus();try{i.setSelectionRange(a+c.length,a+c.length)}catch(e){}}},[c]))});
+sec.appendChild(acc);
+sec.appendChild(h('div',{class:'row'},[btn(s.phase==='ask'?'V\u00e9rifier':'Valider',check)]))}
+else if(s.phase==='right'){sec.appendChild(h('p',{class:'teacher good pop',text:s.cur.missed?'C\u2019est juste !':'Bravo !'}));sec.appendChild(h('p',{class:'bigword',text:cur.w}));var nb=btn(s.queue.length?'Mot suivant':'Voir le r\u00e9sultat',next,null,{id:'next-btn'});sec.appendChild(h('div',{class:'row'},[nb]));state.focus='next-btn'}
+else if(s.phase==='copied'){sec.appendChild(h('p',{class:'teacher good pop',text:'Bien recopi\u00e9 ! Ce mot reviendra un peu plus tard.'}));var nb2=btn('Mot suivant',next,null,{id:'next-btn'});sec.appendChild(h('div',{class:'row'},[nb2]));state.focus='next-btn'}
+sec.appendChild(h('div',{class:'row'},[btn('Arr\u00eater la dict\u00e9e',function(){if(window.speechSynthesis)try{speechSynthesis.cancel()}catch(e){}state.session=null;render()},'quiet')]));
+return sec}
+
+function endView(){var s=state.session;var sec=h('section');
+sec.appendChild(h('p',{class:'teacher good pop',text:'Dict\u00e9e termin\u00e9e !'}));
+sec.appendChild(h('p',{class:'score',text:s.first+' / '+s.total}));
+sec.appendChild(h('p',{text:'mot'+(s.first>1?'s':'')+' r\u00e9ussi'+(s.first>1?'s':'')+' du premier coup.'}));
+if(s.missed.length){sec.appendChild(h('h2',{text:'\u00c0 revoir'}));var ul=h('ul',{class:'missed'});s.missed.forEach(function(x){ul.appendChild(h('li',{text:x.w}))});sec.appendChild(ul)}
+else sec.appendChild(h('p',{text:'Aucune faute : excellent travail !'}));
+var row=h('div',{class:'row'});var src=s.source,missed=s.missed.slice();
+if(missed.length)row.appendChild(btn('Revoir ces mots',function(){startSession(missed,'missed')}));
+row.appendChild(btn('Recommencer',function(){startSession(src,s.label)},missed.length?'ghost':null));
+row.appendChild(btn('Retour',function(){state.session=null;render()},'quiet'));
+sec.appendChild(row);return sec}
+
+function fillVoices(sel){sel.textContent='';if(!state.voices.length){sel.appendChild(h('option',{value:'',text:'Voix fran\u00e7aise par d\u00e9faut'}));return}var cur=pickVoice();state.voices.forEach(function(v){var o=h('option',{value:v.voiceURI,text:v.name+' ('+v.lang+')'});if(cur&&v.voiceURI===cur.voiceURI)o.selected=true;sel.appendChild(o)})}
+
+function wordsView(){var sec=h('section');
+var note;if(state.canPublish===true)note='Les mots enregistr\u00e9s ici apparaissent sur tous les appareils qui ouvrent cette page (iPad d\u2019Oliver, votre t\u00e9l\u00e9phone\u2026).';else if(state.canPublish===false)note=(window.claude?'Sur cet appareil, les mots ajout\u00e9s sont gard\u00e9s uniquement ici.':'Les mots sont enregistr\u00e9s sur cet appareil. Pensez \u00e0 faire une copie de sauvegarde de temps en temps (menu \u00ab Sauvegarde \u00bb plus bas).');else note='V\u00e9rification des droits d\u2019enregistrement\u2026';
+sec.appendChild(h('p',{class:'muted small',text:note}));
+sec.appendChild(h('label',{for:'new-word',text:'Nouveau mot'}));
+function addOne(){var w=document.getElementById('new-word'),p=document.getElementById('new-sentence');var r=addWords([{w:w.value,p:p.value}]);if(r.added){state.msg={t:'ok',x:'\u00ab '+norm(w.value)+' \u00bb ajout\u00e9'+(state.canPublish===true?'. Pensez \u00e0 enregistrer la liste.':'.')};state.focus='new-word'}else if(r.dup)state.msg={t:'err',x:'Ce mot est d\u00e9j\u00e0 dans la liste.'};else{state.msg={t:'err',x:'\u00c9crivez un mot avant de l\u2019ajouter.'};state.focus='new-word'}render()}
+var onEnter=function(e){if(e.key==='Enter'){e.preventDefault();addOne()}};
+sec.appendChild(h('input',{id:'new-word',class:'field',type:'text',autocomplete:'off',autocapitalize:'none',spellcheck:'true',onkeydown:onEnter}));
+sec.appendChild(h('label',{for:'new-sentence',text:'Phrase d\u2019exemple (facultatif, utile pour les homophones)'}));
+sec.appendChild(h('input',{id:'new-sentence',class:'field',type:'text',autocomplete:'off',placeholder:'Ex. : La m\u00e8re de L\u00e9a lit un livre.',onkeydown:onEnter}));
+sec.appendChild(h('div',{class:'row'},[btn('Ajouter le mot',addOne)]));
+if(state.canPublish===true&&state.dirty)sec.appendChild(h('div',{class:'pending'},[h('span',{text:'Des modifications ne sont pas encore enregistr\u00e9es.'}),btn(state.saving?'Enregistrement\u2026':'Enregistrer la liste',save,null,{disabled:state.saving?true:null})]));
+var list=(state.canPublish===false?visibleEmbedded():state.working).map(function(x){return{x:x,local:false}}).concat(state.localExtras.map(function(x){return{x:x,local:true}}));
+sec.appendChild(h('h2',{text:'Les mots ('+list.length+')'}));
+if(!list.length)sec.appendChild(h('p',{class:'muted',text:'Aucun mot pour l\u2019instant.'}));
+var ul=h('ul',{class:'words'});list.forEach(function(it){var x=it.x,st=state.stats[keyOf(x.w)];var li=h('li');li.appendChild(h('span',{class:'w'},[x.w,x.p?h('span',{class:'s',text:x.p}):null]));
+if(st&&st.miss)li.appendChild(h('span',{class:'tag'+(isHard(x)?' hard':''),text:'rat\u00e9 '+st.miss+' fois'}));
+if(it.local&&state.canPublish!==false)li.appendChild(h('span',{class:'tag',text:'sur cet appareil'}));
+li.appendChild(btn('\u00c9couter',function(){speakWord(x,false)},'ghost small-btn'));
+if(it.local||state.canPublish!==false||!window.claude)li.appendChild(btn('Retirer',function(){removeWord(x,it.local)},'danger',{'aria-label':'Retirer '+x.w}));
+ul.appendChild(li)});sec.appendChild(ul);
+var bulk=h('details',null,[h('summary',{text:'Ajouter plusieurs mots d\u2019un coup'}),h('p',{class:'muted small',text:'Un mot par ligne. Pour ajouter une phrase d\u2019exemple : mot : phrase. Exemple \u2014 mer : Nous nageons dans la mer.'}),h('textarea',{id:'bulk',class:'field','aria-label':'Liste de mots'}),h('div',{class:'row'},[btn('Ajouter ces mots',function(){var t=document.getElementById('bulk');var r=addWords(parseBulk(t.value));state.msg=r.added?{t:'ok',x:r.added+' mot'+(r.added>1?'s':'')+' ajout\u00e9'+(r.added>1?'s':'')+(r.dup?' ('+r.dup+' d\u00e9j\u00e0 pr\u00e9sent'+(r.dup>1?'s':'')+')':'')+(state.canPublish===true?'. Pensez \u00e0 enregistrer la liste.':'.')}:{t:'err',x:r.dup?'Ces mots sont d\u00e9j\u00e0 dans la liste.':'Aucun mot trouv\u00e9 dans le texte coll\u00e9.'};render()})])]);
+sec.appendChild(bulk);
+var exportTxt=function(){return practiceList().map(function(x){return x.p?x.w+' : '+x.p:x.w}).join('\n')};
+sec.appendChild(h('details',null,[h('summary',{text:'Sauvegarde'}),h('p',{class:'muted small',text:'Copiez la liste et collez-la dans une note ou un e-mail. Pour la restaurer, collez-la dans \u00ab Ajouter plusieurs mots d\u2019un coup \u00bb.'}),h('div',{class:'row'},[btn('Copier la liste',function(){var t=exportTxt();if(!t){state.msg={t:'err',x:'La liste est vide.'};render();return}var done=function(){state.msg={t:'ok',x:'Liste copi\u00e9e.'};render()};var fall=function(){var ta=document.getElementById('export-box');if(ta){ta.value=t;ta.hidden=false;ta.focus();ta.select()}state.msg={t:'info',x:'Copie automatique impossible : s\u00e9lectionnez le texte affich\u00e9 et copiez-le.'}};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fall);else fall()},'ghost small-btn')]),h('textarea',{id:'export-box',class:'field',hidden:true,readonly:true,'aria-label':'Liste \u00e0 copier'})]));
+var sel=h('select',{id:'voice-select',class:'field',onchange:function(e){state.voiceURI=e.target.value;lsSet(K.voice,state.voiceURI)}});fillVoices(sel);
+sec.appendChild(h('details',null,[h('summary',{text:'Voix et r\u00e9glages'}),h('label',{for:'voice-select',text:'Voix'}),sel,h('div',{class:'row'},[btn('Tester la voix',function(){speak(['Bonjour Oliver, pr\u00eat pour la dict\u00e9e ?'],false)},'ghost small-btn')]),
+h('p',{class:'muted small',text:'Pour une voix plus naturelle sur iPad : R\u00e9glages > Accessibilit\u00e9 > Contenu \u00e9nonc\u00e9 > Voix > Fran\u00e7ais, puis t\u00e9l\u00e9chargez une voix \u00ab am\u00e9lior\u00e9e \u00bb ou \u00ab premium \u00bb. Rechargez ensuite cette page.'}),
+h('div',{class:'row'},[btn('Remettre les compteurs de fautes \u00e0 z\u00e9ro',function(){if(window.confirm('Effacer le compteur de fautes de tous les mots sur cet appareil ?')){state.stats={};saveStats();state.msg={t:'ok',x:'Compteurs remis \u00e0 z\u00e9ro.'};render()}},'danger')])]));
+return sec}
+
+render();
+if(window.claude&&typeof window.claude.use==='function'){window.claude.use('artifact').then(function(a){if(a&&typeof a.publish==='function'){state.artifact=a;state.canPublish=true}else becomeLocal();render()},function(){becomeLocal();render()})}else{becomeLocal();render()}
+})();
+</script>
+</body>
+</html>
